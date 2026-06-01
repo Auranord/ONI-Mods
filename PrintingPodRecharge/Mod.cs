@@ -84,17 +84,6 @@ namespace PrintingPodRecharge
             DataGen.BundleGen.Generate(Path.Combine(ModAssets.GetRootPath(), "data", "bundles"), true);
 
             otherMods = new ModData(mods);
-            if(otherMods.IsTwitchIntegrationHere)
-            {
-                Integration.TwitchIntegration.GeyserPatch.Patch(harmony);
-
-                Log.Info("Set up compatibility Twitch Integration.\n" +
-                    "Added events: \n" +
-                    "- \"Leaky Printing Pod\"\n" +
-                    "- \"Useless Print\"\n" +
-                    "- \"Helpful Print\"\n" +
-                    "- \"Spawn Wacky Dupe\"");
-            }
         }
 
         private static void RegisterDevTools()

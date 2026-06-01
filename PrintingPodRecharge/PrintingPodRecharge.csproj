@@ -18,7 +18,7 @@
 		<IsMod>true</IsMod>
 		<GenerateMetadata>true</GenerateMetadata>
 		<FUtility>true</FUtility>
-		<IsPacked>true</IsPacked>
+		<IsPacked>false</IsPacked>
 	</PropertyGroup>
 
 	<!-- Mod Info -->
@@ -47,10 +47,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-
-		<Reference Include="ONITwitchLib">
-			<HintPath>..\..\..\Lib\ONITwitchLib.dll</HintPath>
-		</Reference>
 
 		<Reference Include="Unity.TextMeshPro">
 			<HintPath>$(GameLibsFolder)/Unity.TextMeshPro.dll</HintPath>
@@ -103,4 +99,8 @@
 		</Reference>
 	</ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="Integration/TwitchIntegration/**/*.cs" />
+    <Compile Include="Integration/TwitchIntegration/DbInit.cs" />
+  </ItemGroup>
 </Project>

@@ -1,5 +1,4 @@
 ﻿using PrintingPodRecharge.Content;
-using PrintingPodRecharge.Integration.TwitchIntegration;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,7 +22,7 @@ namespace PrintingPodRecharge.Content.Items.BookI
             canBePublic = false;
         }
 
-        public virtual void OnUse(Worker worker)
+        public virtual void OnUse(WorkerBase worker)
         {
 
         }
@@ -89,7 +88,7 @@ namespace PrintingPodRecharge.Content.Items.BookI
             if (kSelectable == null)
                 return;
 
-            var status_item = assignee != null ? DbInit.assignedStatus : Db.Get().BuildingStatusItems.Unassigned;
+            var status_item = assignee != null ? PrintingPodRecharge.Content.DbInit.assignedStatus : Db.Get().BuildingStatusItems.Unassigned;
             kSelectable.SetStatusItem(Db.Get().StatusItemCategories.Ownable, status_item, this);
         }
 

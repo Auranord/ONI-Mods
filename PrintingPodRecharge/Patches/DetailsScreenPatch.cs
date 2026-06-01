@@ -10,6 +10,7 @@ namespace PrintingPodRecharge.Patches
         {
             public static void Postfix()
             {
+                ModAssets.LateLoadAssets();
                 FUtility.FUI.SideScreen.AddCustomSideScreen<BioInkSidescreen>("Telepad Recharge Sidescreen", ModAssets.Prefabs.bioInkSideScreen);
             }
         }

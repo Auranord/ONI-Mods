@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
 
 namespace FUtility
 {
-	public class FAssets
+	public class Assets
 	{
 		public static Texture2D LoadTexture(string name, string directory)
 		{
@@ -17,6 +18,62 @@ namespace FUtility
 			string path = Path.Combine(directory, name + ".png");
 
 			return LoadTexture(path);
+		}
+
+		public static void LoadSprites(global::Assets assets, string path = null)
+		{
+			path = path.IsNullOrWhiteSpace() ? Path.Combine(Utils.ModPath, "assets", "sprites") : path;
+
+			if (!Directory.Exists(path))
+				return;
+
+			foreach (var file in Directory.GetFiles(path, "*.png"))
+			{
+				var name = Path.GetFileNameWithoutExtension(file);
+				var sprite = LoadSprite(file, name);
+				assets.SpriteAssets.Add(sprite);
+
+				var metaPath = Path.Combine(Path.GetDirectoryName(path), name + ".meta.json");
+				if (File.Exists(metaPath))
+				{
+					var json = File.ReadAllText(metaPath);
+					if (json != null)
+					{
+						var data = JsonConvert.DeserializeObject<AssetMetaData>(json);
+						if (data.TintedSprite)
+						{
+							assets.TintedSpriteAssets.Add(new TintedSprite()
+							{
+								sprite = sprite,
+								name = name,
+								color = Util.ColorFromHex(data.ColorHex)
+							});
+						}
+					}
+				}
+			}
+		}
+
+		public class AssetMetaData
+		{
+			public bool TintedSprite { get; set; }
+
+			public string ColorHex { get; set; } = "FFFFFF";
+		}
+
+		private static Sprite LoadSprite(string path, string spriteName)
+		{
+			var texture = LoadTexture(path, true);
+
+			if (texture == null)
+			{
+				return null;
+			}
+
+			var sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector3.zero);
+			sprite.name = spriteName;
+
+			return sprite;
 		}
 
 		public static bool TryLoadTexture(string path, out Texture2D texture)
@@ -33,7 +90,7 @@ namespace FUtility
 			{
 				byte[] data = TryReadFile(path);
 				texture = new Texture2D(1, 1);
-				texture.LoadImage(data);
+				TextureLoadCompat.LoadImage(texture, data);
 			}
 			else if (warnIfFailed)
 			{
@@ -56,34 +113,25 @@ namespace FUtility
 			}
 		}
 
-		public static TextureAtlas GetCustomAtlas(string filePath, TextureAtlas tileAtlas)
+		public static TextureAtlas GetCustomAtlas(string fileName, string folder, TextureAtlas tileAtlas)
 		{
-			var tex = LoadTexture(filePath);
+			string path = Utils.ModPath;
+
+			if (folder != null)
+			{
+				path = Path.Combine(path, folder);
+			}
+
+			var tex = LoadTexture(fileName, path);
 
 			if (tex == null)
+			{
 				return null;
+			}
 
 			TextureAtlas atlas;
 			atlas = ScriptableObject.CreateInstance<TextureAtlas>();
 			atlas.texture = tex;
-			atlas.scaleFactor = tileAtlas.scaleFactor;
-			atlas.items = tileAtlas.items;
-			atlas.name = Path.GetFileNameWithoutExtension(filePath) + "_atlas";
-
-			return atlas;
-		}
-
-		public static TextureAtlas GetCustomAtlas(string fileName, string folder, TextureAtlas tileAtlas)
-		{
-			var path = Path.Combine(Utils.ModPath, folder, fileName + ".png");
-			return GetCustomAtlas(path, tileAtlas);
-		}
-
-		public static TextureAtlas GetCustomAtlas(Texture2D texture, TextureAtlas tileAtlas)
-		{
-			TextureAtlas atlas;
-			atlas = ScriptableObject.CreateInstance<TextureAtlas>();
-			atlas.texture = texture;
 			atlas.scaleFactor = tileAtlas.scaleFactor;
 			atlas.items = tileAtlas.items;
 

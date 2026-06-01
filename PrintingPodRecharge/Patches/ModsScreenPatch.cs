@@ -17,6 +17,7 @@ namespace PrintingPodRecharge.Patches
 
             private static void OpenModSettingsScreen()
             {
+                ModAssets.LateLoadAssets();
                 Helper.CreateFDialog<ModSettingsScreen>(ModAssets.Prefabs.settingsDialog, "BioInkSettings");
             }
         }

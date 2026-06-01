@@ -11,9 +11,6 @@ namespace PrintingPodRecharge.Patches
             public static void Postfix(Db __instance)
             {
                 ModDb.OnDbInit(__instance);
-
-                if (Mod.otherMods.IsTwitchIntegrationHere)
-					Integration.TwitchIntegration.TwitchMod.OnDbInit();
 			}
         }
     }
