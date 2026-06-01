@@ -170,7 +170,13 @@ namespace PrintingPodRecharge.UI
 
 			foreach (var option in options)
 			{
-				newOptions.Add(new TMP_Dropdown.OptionData(option.name, option.sprite));
+				var optionData = new TMP_Dropdown.OptionData
+				{
+					text = option.name,
+					image = option.sprite
+				};
+
+				newOptions.Add(optionData);
 			}
 
 			dropdown.AddOptions(newOptions);
